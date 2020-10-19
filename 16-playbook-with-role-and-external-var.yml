@@ -1,0 +1,8 @@
+--- #ansible-playbook 16-playbook-with-role-and-external-var.yml -e "MYHOSTS=test1"
+- name: Install apache and Upload my web page
+  hosts: "{{ MYHOSTS }}"
+  become: yes
+
+  roles:
+    - role: deploy_apache_web
+      when: ansible_system == "Linux"

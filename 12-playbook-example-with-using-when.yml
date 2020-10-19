@@ -1,0 +1,21 @@
+---
+- name: Using when
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Printing messages for server 1
+    when: ansible_eth0.ipv4.address == "207.154.234.151"
+    debug:
+      msg: "That is server 1"
+
+  - name: Printing messages for server 2
+    when: ansible_eth0.ipv4.address == "159.65.124.7"
+    debug:
+      msg: "That is server 2"
+
+
+  - name: That won't be printed
+    when: ansible_eth0.ipv4.address == "159.65.124.11"
+    debug:
+      msg: "That is server 3"

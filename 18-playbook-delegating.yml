@@ -1,0 +1,54 @@
+--- #ansible-playbook -K 18-playbook-delegating.yml [к - чтобы пароль ввести от мастера]
+- name: Testing import and delegating
+  hosts: all
+  become: yes
+
+  vars:
+    mytext: "Privet ot Marka"
+
+  tasks:
+  - name: Ping test
+    ping:
+
+  - name: Unregister Server from Load Balancer
+    shell: echo This server {{ inventory_hostname }} was deregistered from out Load Balancer, node name is {{ ansible_nodename }} >> /home/log.txt
+    delegate_to: 127.0.0.1
+
+  - name: create file1
+    copy:
+      dest: /home/file1.txt
+      content: |
+        This is fileN1
+        On English Hello world
+        On Russian {{ mytext }}
+    delegate_to: test1
+
+  - name: create file2
+    copy:
+      dest: /home/file2.txt
+      content: |
+        This is fileN2
+        On English Hello world
+        On Russian {{ mytext }}
+
+  - name: Reboot my servers
+    shell: sleep 3 && reboot now
+    async: 1
+    poll: 0
+
+  - name: Wait utill my servers will come up online
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      state: started
+      delay: 5
+      timeout: 60
+    delegate_to: 127.0.0.1
+
+  - name: Print echo on servers
+    debug:
+      msg: "This server {{ ansible_nodename }}"
+
+  - name: Update Database
+    debug:
+      msg: "Updating database... :)"
+    run_once: true

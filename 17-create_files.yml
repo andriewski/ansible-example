@@ -1,0 +1,11 @@
+---
+- name: Create files
+  copy:
+    dest: /home/secret/file{{ item }}.txt
+    content: |
+      Text Line1, in file{{ item }}
+      Text Line2, in file{{ item }}
+      Text Line3, {{ mytext }}
+  loop:
+    - 1
+    - 2

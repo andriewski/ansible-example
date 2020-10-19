@@ -1,0 +1,6 @@
+[staging_servers]
+test1  ansible_host=207.154.234.151
+test2  ansible_host=159.65.124.7   
+
+[staging_servers:vars]
+ansible_user = root

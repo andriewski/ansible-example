@@ -1,0 +1,41 @@
+---
+# tasks file for deploy_apache_web
+
+- block: #========= Block for Debian ==========
+
+    - name: Check ansible system
+      debug:
+        msg: "{{ ansible_system }} {{ temp_var }}"
+
+    - name: Install Apache Web Server for Debian
+      yum: name=apache2 state=latest
+
+    - name: Start WebServers and make it enable on boot for Debian
+      service: name=apache2 state=started enabled=yes
+
+  when: ansible_os_family == "Debian"
+
+- block: #========= Block for RedHat ==========
+
+    - name: Install Apache Web Server for RedHat
+      yum: name=httpd state=latest
+
+    - name: Start WebServers and make it enable on boot for RedHat
+      service: name=httpd state=started enabled=yes
+
+  when: ansible_os_family == "RedHat"
+
+- name: Generate index.html file from j2 file
+  template: src=index.j2 dest=index.html mode=0555
+  notify:
+    - Restart Apache Debian
+    - Restart Apache RedHat
+
+- name: Copy files to Servers
+  copy: src={{ item }} dest={{ destin_folder }} mode=0555
+  loop:
+    - "picture.jpg"
+    - "puffin.jpg"
+  notify:
+    - Restart Apache Debian
+    - Restart Apache RedHat

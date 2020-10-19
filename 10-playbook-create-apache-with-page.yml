@@ -1,0 +1,27 @@
+---
+- name: Install apache and Upload my web page
+  hosts: all
+  become: yes
+
+  vars:
+    source_file: ./html/index.html
+    destin_file: /var/www/html
+
+  tasks:
+  - name: Pring os type
+    debug:
+      msg: "{{ ansible_os_family }} -> {{ ansible_eth0.ipv4.address }}"
+
+  - name: Install Apache Web Server
+    yum: name=apache2 state=latest
+
+  - name: Copy index html file to Servers
+    copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+    notify: Restart Apache
+
+  - name: Start WebServers and make it enable on boot
+    service: name=apache2 state=started enabled=yes
+
+  handlers:
+  - name: Restart Apache
+    service: name=apache2 state=restarted

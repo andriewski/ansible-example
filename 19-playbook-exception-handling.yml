@@ -1,0 +1,29 @@
+---
+- name: Testing import and delegating
+  hosts: all
+  become: yes
+  any_errors_fatal: true # прекращает выполнение на всех серверах, если хотя бы на одном из них произошла ошибка
+
+  tasks:
+  - name: Task Number1
+    yum: name=treeeee state=latest
+    ignore_errors: yes
+
+  - name: Task Number2
+    shell: echo Hello world
+    register: results
+    failed_when: results.rc != 0 #проверяем return code (0 - на самом деле - успешный исход)
+#    failed_when: "'world' in results.stdout"
+
+  - name: Debugging results
+    debug:
+      var: results
+
+  - name: Task should stop on all servers because of failure on one of them
+    shell: cat /home/test.txt
+
+  - name: Task Number3
+    debug:
+      msg: "Hello world {{ ansible_nodename }}"
+
+

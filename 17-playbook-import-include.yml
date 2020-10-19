@@ -1,0 +1,14 @@
+---
+- name: Testing import and include
+  hosts: all
+  become: yes
+
+  vars:
+    mytext: "Privet ot Marka"
+
+  tasks:
+    - name: Ping test
+      ping:
+
+    - include: 17-create_folders.yml
+    - include: 17-create_files.yml mytext="hello world"

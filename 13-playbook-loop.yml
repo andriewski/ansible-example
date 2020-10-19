@@ -1,0 +1,41 @@
+---
+- name: Loops Playbook
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Say Hello to All
+    debug: msg="Hello {{ item }}"
+    loop:
+      - "Vasya"
+      - "Petya"
+      - "Pasha"
+      - "Masha"
+      - "Olya"
+      -
+  - name: Say Hello to All
+    debug: msg="Hello {{ item }}"
+    with_items: #the same as loop
+      - "1"
+      - "2"
+      - "3"
+
+  - name: Loop Until example
+    shell: echo -n Z >> myfile.txt && cat myfile.txt
+    register: output
+    delay: 2 #sec unnecessary parameter
+    retries: 10 #unnecessary parameter
+    until: output.stdout.find("ZZZZ") == false
+
+  - name: Pring output
+    debug:
+      var: output.stdout
+
+  - name: Install many packages
+    yum: name={{ item }} state=latest
+    loop:
+      - python
+      - curl
+      - tree
+      - apache2
+

@@ -1,0 +1,41 @@
+---
+- name: Test playbook with variables
+  hosts: all
+  become: yes
+
+  vars:
+    message1: Privet
+    message2: World
+    secret: adsfasdf
+
+  tasks:
+  - name: Print Secret variables
+    debug:
+      var: secret
+
+  - name: Print message1
+    debug:
+      msg: "Secretnoe slovo: {{ message1 }} and from 'ansible all -m setup' -> {{ ansible_eth0.ipv4.address }}"
+
+  - name: System info
+    debug:
+      var: ansible_processor
+
+  - name: Print owner
+    debug:
+      msg: "The owner is -> {{ owner }} <-"
+
+  - set_fact:
+      full_message: "{{ message1 }} {{ message2 }} from {{ owner }}"
+
+  - name: Test full message
+    debug:
+      var: full_message
+
+  - name: Saving result of shell execution
+    shell: uptime
+    register: results
+
+  - name: Printing result of shell command
+    debug:
+      var: results.stdout

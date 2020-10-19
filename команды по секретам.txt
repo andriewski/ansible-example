@@ -1,0 +1,8 @@
+ansible-playbook 20-playbook-secret-and-vault.yml --ask-vault-pass
+ansible-playbook 20-playbook-secret-and-vault.yml --vault-password-file mypass.txt
+ansible-vault encrypt_string --stdin-name "Mypassword"
+echo -n "SecretWord123123" | ansible-vault encrypt_string
+
+
+
+https://www.youtube.com/watch?v=20g9BNilDvg&list=PLg5SS_4L6LYufspdPupdynbMQTBnZd31N&index=20&ab_channel=ADV-IT
